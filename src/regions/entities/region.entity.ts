@@ -5,26 +5,23 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
-  Index,
+  OneToMany,
 } from 'typeorm';
+import { Commune } from '../../communes/entities/commune.entity';
 
-@Entity('postal_codes')
-@Index(['commune', 'street', 'number'], { unique: true })
-export class PostalCode {
+@Entity('regions')
+export class Region {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', length: 128 })
-  commune: string;
+  @Column({ type: 'int' })
+  number: number;
 
   @Column({ type: 'varchar', length: 128 })
-  street: string;
+  name: string;
 
-  @Column({ type: 'varchar', length: 32 })
-  number: string;
-
-  @Column({ type: 'varchar', length: 16 })
-  code: string;
+  @Column({ type: 'varchar', length: 128 })
+  label: string;
 
   @Column({ default: true })
   isActive: boolean;
@@ -37,4 +34,7 @@ export class PostalCode {
 
   @DeleteDateColumn({ nullable: true })
   deletedAt?: Date;
+
+  @OneToMany(() => Commune, (commune) => commune.region)
+  communes: Commune[];
 }

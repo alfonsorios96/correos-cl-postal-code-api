@@ -5,26 +5,25 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
-  Index,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { Region } from '../../regions/entities/region.entity';
 
-@Entity('postal_codes')
-@Index(['commune', 'street', 'number'], { unique: true })
-export class PostalCode {
+@Entity('communes')
+export class Commune {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', length: 128 })
-  commune: string;
+  @Column()
+  name: string;
 
-  @Column({ type: 'varchar', length: 128 })
-  street: string;
+  @ManyToOne(() => Region, (region) => region.communes)
+  @JoinColumn({ name: 'regionId' })
+  region: Region;
 
-  @Column({ type: 'varchar', length: 32 })
-  number: string;
-
-  @Column({ type: 'varchar', length: 16 })
-  code: string;
+  @Column()
+  regionId: string;
 
   @Column({ default: true })
   isActive: boolean;
