@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Controller, Get, Query, BadRequestException } from '@nestjs/common';
 import {
   ApiBadRequestResponse,

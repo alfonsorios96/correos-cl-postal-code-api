@@ -9,6 +9,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostalCodesModule } from './postal-codes/postal-codes.module';
 import { RegionsModule } from './regions/regions.module';
 import { CommunesModule } from './communes/communes.module';
+import { StreetsModule } from './streets/streets.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CommunesModule } from './communes/communes.module';
     PostalCodesModule,
     RegionsModule,
     CommunesModule,
+    StreetsModule,
   ],
 })
 export class AppModule {}
