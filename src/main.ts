@@ -2,6 +2,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import * as nodeCrypto from 'crypto';
+
+if (!globalThis.crypto) {
+  Object.defineProperty(globalThis, 'crypto', {
+    value: nodeCrypto,
+  });
+}
+
 import { NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
