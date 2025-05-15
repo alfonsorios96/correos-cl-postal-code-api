@@ -6,6 +6,7 @@ import { PostalCodeSearchDto } from './dto/postal-code-search.dto';
 import { scrapePostalCode } from '../utils/postal-code-scraper.util';
 import { AppLogger } from '../common/logger/logger.service';
 import { PostalCodeResponseDto } from './dto/postal-code-response.dto';
+import { normalizeText } from '../utils/normalize-text.util';
 
 @Injectable()
 export class PostalCodesService {
@@ -18,8 +19,8 @@ export class PostalCodesService {
   async findOrScrape(
     dto: PostalCodeSearchDto,
   ): Promise<PostalCodeResponseDto | { error: string }> {
-    const commune = dto.commune.trim().toLowerCase();
-    const street = dto.street.trim().toLowerCase();
+    const commune = normalizeText(dto.commune);
+    const street = normalizeText(dto.street);
     const number = dto.number.trim();
 
     this.logger.log(

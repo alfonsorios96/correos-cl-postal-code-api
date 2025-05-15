@@ -9,6 +9,7 @@ import {
 } from '@nestjs/swagger';
 import { PostalCodesService } from './postal-codes.service';
 import { PostalCodeSearchDto } from './dto/postal-code-search.dto';
+import { PostalCodeResponseDto } from './dto/postal-code-response.dto';
 
 @ApiTags('Postal Codes')
 @Controller('postal-codes')
@@ -19,16 +20,14 @@ export class PostalCodesController {
   @ApiOperation({
     summary: 'Find a postal code by commune, street, and number',
     description:
-      'Looks up a Chilean postal code using Correos de Chile. If not cached, it will scrape the website and store the result.',
+      'Looks up a Chilean postal code using Correos de Chile. If not cached, it scrapes the website and stores the result.',
   })
-  @ApiQuery({ name: 'commune', required: true, example: 'La Florida' })
-  @ApiQuery({ name: 'street', required: true, example: 'Las Acacias' })
+  @ApiQuery({ name: 'commune', required: true, example: 'LA FLORIDA' })
+  @ApiQuery({ name: 'street', required: true, example: 'LAS ACACIAS' })
   @ApiQuery({ name: 'number', required: true, example: '7700' })
   @ApiOkResponse({
     description: 'Postal code found successfully.',
-    schema: {
-      example: { postalCode: '8260323' },
-    },
+    type: PostalCodeResponseDto,
   })
   @ApiBadRequestResponse({
     description: 'Invalid input or scraping failure.',
@@ -40,7 +39,7 @@ export class PostalCodesController {
   })
   async search(
     @Query() dto: PostalCodeSearchDto,
-  ): Promise<{ postalCode: string }> {
+  ): Promise<PostalCodeResponseDto> {
     const result = await this.postalCodesService.findOrScrape(dto);
 
     if ('error' in result) {
