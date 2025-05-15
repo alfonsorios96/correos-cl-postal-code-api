@@ -24,7 +24,7 @@ import { PostalCodesModule } from './postal-codes/postal-codes.module';
         username: config.get<string>('DB_USERNAME'),
         password: config.get<string>('DB_PASSWORD'),
         database: config.get<string>('DB_NAME'),
-        synchronize: config.get<string>('NODE_ENV') !== 'production',
+        synchronize: true, //config.get<string>('NODE_ENV') !== 'production',
         autoLoadEntities: true,
         logging: config.get<string>('NODE_ENV') !== 'production',
       }),
