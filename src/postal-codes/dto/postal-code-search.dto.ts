@@ -4,7 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class PostalCodeSearchDto {
   @ApiProperty({
-    example: 'La Florida',
+    example: 'LA FLORIDA',
     description: 'Name of the commune',
   })
   @IsString()
@@ -12,7 +12,7 @@ export class PostalCodeSearchDto {
   commune: string;
 
   @ApiProperty({
-    example: 'Las Acacias',
+    example: 'LAS ACACIAS',
     description: 'Street name',
   })
   @IsString()

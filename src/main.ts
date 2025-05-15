@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
@@ -43,19 +42,25 @@ async function bootstrap(): Promise<void> {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('v1/api', app, document);
 
+  // Redirección desde la raíz '/' a '/v1/api'
+  app.getHttpAdapter().get('/', (_req, res) => {
+    res.redirect('/v1/api');
+  });
+
   const port = Number(process.env.PORT) || 3000;
 
   await app
     .listen(port, '0.0.0.0')
-    .then(() =>
-      logger.log(
-        `🚀 Server ready at http://localhost:${port}/v1/api`,
-        'Bootstrap',
-      ),
-    )
-    .catch((err) =>
-      logger.error('❌ Failed to start server', err.stack, 'Bootstrap'),
-    );
+    .then(() => {
+      const baseUrl =
+        process.env.NODE_ENV === 'production'
+          ? `https://your-production-domain.com`
+          : `http://localhost:${port}`;
+      logger.log(`🚀 Server ready at ${baseUrl}/v1/api`, 'Bootstrap');
+    })
+    .catch((err) => {
+      logger.error('❌ Failed to start server', err.stack, 'Bootstrap');
+    });
 }
 
 void bootstrap();
