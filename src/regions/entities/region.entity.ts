@@ -23,6 +23,9 @@ export class Region {
   @Column({ type: 'varchar', length: 128 })
   label: string;
 
+  @Column({ type: 'varchar', length: 8 })
+  romanNumber: string;
+
   @Column({ default: true })
   isActive: boolean;
 
