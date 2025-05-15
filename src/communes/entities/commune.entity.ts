@@ -7,8 +7,10 @@ import {
   DeleteDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { Region } from '../../regions/entities/region.entity';
+import { Street } from '../../streets/entities/street.entity';
 
 @Entity('communes')
 export class Commune {
@@ -24,6 +26,9 @@ export class Commune {
 
   @Column()
   regionId: string;
+
+  @OneToMany(() => Street, (street) => street.commune)
+  streets: Street[];
 
   @Column({ default: true })
   isActive: boolean;

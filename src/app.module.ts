@@ -10,6 +10,7 @@ import { PostalCodesModule } from './postal-codes/postal-codes.module';
 import { RegionsModule } from './regions/regions.module';
 import { CommunesModule } from './communes/communes.module';
 import { StreetsModule } from './streets/streets.module';
+import { StreetNumbersModule } from './street-numbers/street-numbers.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { StreetsModule } from './streets/streets.module';
     RegionsModule,
     CommunesModule,
     StreetsModule,
+    StreetNumbersModule,
   ],
 })
 export class AppModule {}

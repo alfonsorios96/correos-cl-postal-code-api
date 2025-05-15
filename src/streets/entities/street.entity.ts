@@ -7,8 +7,10 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { Commune } from '../../communes/entities/commune.entity';
+import { StreetNumber } from 'src/street-numbers/entities/street-number.entity';
 
 @Entity('streets')
 export class Street {
@@ -33,4 +35,7 @@ export class Street {
 
   @DeleteDateColumn({ nullable: true })
   deletedAt?: Date;
+
+  @OneToMany(() => StreetNumber, (number) => number.street)
+  numbers: StreetNumber[];
 }
