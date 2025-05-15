@@ -1,26 +1,27 @@
-import { Injectable, Logger, LoggerService } from '@nestjs/common';
+import { Injectable, LoggerService } from '@nestjs/common';
 
 @Injectable()
 export class AppLogger implements LoggerService {
-  private readonly logger = new Logger('App');
-
   log(message: string, context?: string): void {
-    this.logger.log(message, context);
+    console.log(`[LOG]${context ? ` [${context}]` : ''} ${message}`);
   }
 
   error(message: string, trace?: string, context?: string): void {
-    this.logger.error(message, trace, context);
+    console.error(`[ERROR]${context ? ` [${context}]` : ''} ${message}`);
+    if (trace) {
+      console.error(`[TRACE] ${trace}`);
+    }
   }
 
   warn(message: string, context?: string): void {
-    this.logger.warn(message, context);
+    console.warn(`[WARN]${context ? ` [${context}]` : ''} ${message}`);
   }
 
   debug(message: string, context?: string): void {
-    this.logger.debug?.(message, context);
+    console.debug(`[DEBUG]${context ? ` [${context}]` : ''} ${message}`);
   }
 
   verbose(message: string, context?: string): void {
-    this.logger.verbose?.(message, context);
+    console.info(`[VERBOSE]${context ? ` [${context}]` : ''} ${message}`);
   }
 }

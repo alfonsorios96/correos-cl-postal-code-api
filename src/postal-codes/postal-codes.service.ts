@@ -38,6 +38,7 @@ export class PostalCodesService {
       );
 
       return {
+        id: existing.id,
         street: existing.street,
         number: existing.number,
         commune: existing.commune,
@@ -68,7 +69,7 @@ export class PostalCodesService {
       code: result.postalCode,
     });
 
-    await this.postalCodeRepository.save(newRecord);
+    const saved = await this.postalCodeRepository.save(newRecord);
 
     this.logger.log(
       `Postal code scraped and saved: ${result.postalCode}`,
@@ -76,10 +77,11 @@ export class PostalCodesService {
     );
 
     return {
-      street,
-      number,
-      commune,
-      postalCode: result.postalCode!,
+      id: saved.id,
+      street: saved.street,
+      number: saved.number,
+      commune: saved.commune,
+      postalCode: saved.code,
     };
   }
 }

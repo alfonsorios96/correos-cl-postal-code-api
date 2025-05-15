@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
@@ -22,8 +23,11 @@ async function bootstrap(): Promise<void> {
   const logger = app.get(AppLogger);
   app.useLogger(logger);
 
+  logger.log('Starting application...', 'Bootstrap');
+
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  app.setGlobalPrefix('v1');
 
   const config = new DocumentBuilder()
     .setTitle('Chilean Postal Codes API')
@@ -37,12 +41,21 @@ async function bootstrap(): Promise<void> {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('v1/api', app, document);
 
   const port = Number(process.env.PORT) || 3000;
-  await app.listen(port, '0.0.0.0');
 
-  logger.log(`🚀 Server ready at http://localhost:${port}/api`, 'Bootstrap');
+  await app
+    .listen(port, '0.0.0.0')
+    .then(() =>
+      logger.log(
+        `🚀 Server ready at http://localhost:${port}/v1/api`,
+        'Bootstrap',
+      ),
+    )
+    .catch((err) =>
+      logger.error('❌ Failed to start server', err.stack, 'Bootstrap'),
+    );
 }
 
 void bootstrap();
