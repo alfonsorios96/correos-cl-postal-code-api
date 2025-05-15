@@ -1,5 +1,8 @@
 import { DataSource } from 'typeorm';
 import { Region } from '../entities/region.entity';
+import { Commune } from '../../communes/entities/commune.entity';
+import { Street } from '../../streets/entities/street.entity';
+import { StreetNumber } from '../../street-numbers/entities/street-number.entity';
 
 const AppDataSource = new DataSource({
   type: 'postgres',
@@ -8,7 +11,7 @@ const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME ?? 'postgres',
   password: process.env.DB_PASSWORD ?? 'postgres',
   database: process.env.DB_NAME ?? 'postal_codes',
-  entities: [Region],
+  entities: [Region, Commune, Street, StreetNumber],
   synchronize: false,
   logging: false,
 });

@@ -10,7 +10,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Commune } from '../../communes/entities/commune.entity';
-import { StreetNumber } from 'src/street-numbers/entities/street-number.entity';
+import { StreetNumber } from '../../street-numbers/entities/street-number.entity';
 
 @Entity('streets')
 export class Street {
