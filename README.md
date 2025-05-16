@@ -138,7 +138,7 @@ Si esta API te sirvió o te ahorró tiempo, puedes agradecer:
 
 - Compartiendo el proyecto 🙌
 - Dándole estrella al repo ⭐
-- Escribiéndome en [LinkedIn](https://www.linkedin.com/in/alejandroexequielhernandez/)
+- Escribiéndome en [LinkedIn](https://www.linkedin.com/in/alejandrehl/)
 
 ---
 
