@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import * as nodeCrypto from 'crypto';
 
 if (!globalThis.crypto) {
@@ -50,7 +46,6 @@ async function bootstrap(): Promise<void> {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('v1/api', app, document);
 
-  // Redirección desde la raíz '/' a '/v1/api'
   app.getHttpAdapter().get('/', (_req, res) => {
     res.redirect('/v1/api');
   });
@@ -67,6 +62,7 @@ async function bootstrap(): Promise<void> {
       logger.log(`🚀 Server ready at ${baseUrl}/v1/api`, 'Bootstrap');
     })
     .catch((err) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       logger.error('❌ Failed to start server', err.stack, 'Bootstrap');
     });
 }
