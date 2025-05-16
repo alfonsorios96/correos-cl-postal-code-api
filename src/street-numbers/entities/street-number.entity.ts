@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Street } from '../../streets/entities/street.entity';
+import { PostalCode } from '../../postal-codes/entities/postal-code.entity';
 
 @Entity('street_numbers')
 export class StreetNumber {
@@ -19,6 +20,9 @@ export class StreetNumber {
 
   @ManyToOne(() => Street, (street) => street.numbers, { nullable: false })
   street: Street;
+
+  @ManyToOne(() => PostalCode, { nullable: true })
+  postalCode: PostalCode;
 
   @Column({ default: true })
   isActive: boolean;

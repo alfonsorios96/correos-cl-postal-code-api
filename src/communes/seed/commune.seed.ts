@@ -3,6 +3,7 @@ import { Commune } from '../entities/commune.entity';
 import { Region } from '../../regions/entities/region.entity';
 import { Street } from '../../streets/entities/street.entity';
 import { StreetNumber } from '../../street-numbers/entities/street-number.entity';
+import { normalizeText } from '../../utils/normalize-text.util';
 
 const AppDataSource = new DataSource({
   type: 'postgres',
@@ -409,6 +410,7 @@ async function seedCommunes() {
       await communeRepo.insert(
         communesToInsert.map((commune) => ({
           name: commune.name,
+          normalizedName: normalizeText(commune.name),
           regionId: region.id,
           isActive: true,
         })),

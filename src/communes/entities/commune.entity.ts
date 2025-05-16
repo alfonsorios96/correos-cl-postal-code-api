@@ -8,6 +8,7 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  Index,
 } from 'typeorm';
 import { Region } from '../../regions/entities/region.entity';
 import { Street } from '../../streets/entities/street.entity';
@@ -17,8 +18,12 @@ export class Commune {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 128 })
   name: string;
+
+  @Index()
+  @Column({ type: 'varchar', length: 128, unique: true })
+  normalizedName: string;
 
   @ManyToOne(() => Region, (region) => region.communes)
   @JoinColumn({ name: 'regionId' })
