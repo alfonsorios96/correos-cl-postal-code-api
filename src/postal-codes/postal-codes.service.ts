@@ -10,7 +10,6 @@ import { scrapePostalCode } from '../utils/postal-code-scraper.util';
 import { Commune } from '../communes/entities/commune.entity';
 import { Street } from '../streets/entities/street.entity';
 import { StreetNumber } from '../street-numbers/entities/street-number.entity';
-import { Region } from '../regions/entities/region.entity';
 
 @Injectable()
 export class PostalCodesService {
@@ -26,9 +25,6 @@ export class PostalCodesService {
 
     @InjectRepository(StreetNumber)
     private readonly streetNumberRepository: Repository<StreetNumber>,
-
-    @InjectRepository(Region)
-    private readonly regionRepository: Repository<Region>,
 
     private readonly logger: AppLogger,
   ) {}
@@ -48,7 +44,7 @@ export class PostalCodesService {
       'PostalCodesService',
     );
 
-    // 1. Buscar comuna por normalizedName
+    // 1. Buscar comuna
     const commune = await this.communeRepository.findOne({
       where: { normalizedName: normalizedCommune },
       relations: ['region'],
@@ -58,7 +54,7 @@ export class PostalCodesService {
       throw new NotFoundException(`Commune '${communeInput}' not found`);
     }
 
-    // 2. Buscar o crear calle por normalizedName
+    // 2. Buscar calle
     let street = await this.streetRepository.findOne({
       where: {
         normalizedName: normalizedStreet,
@@ -66,37 +62,31 @@ export class PostalCodesService {
       },
     });
 
-    if (!street) {
-      street = this.streetRepository.create({
-        name: streetInput,
-        normalizedName: normalizedStreet,
-        commune,
-      });
-      street = await this.streetRepository.save(street);
-    }
-
     // 3. Buscar número de calle
-    let streetNumber = await this.streetNumberRepository.findOne({
-      where: {
-        value: numberValue,
-        street: { id: street.id },
-      },
-      relations: ['postalCode'],
-    });
+    let streetNumber: StreetNumber | null = null;
+    if (street) {
+      streetNumber = await this.streetNumberRepository.findOne({
+        where: {
+          value: numberValue,
+          street: { id: street.id },
+        },
+        relations: ['postalCode'],
+      });
 
-    // 4. Si ya tiene postalCode, devolver respuesta
-    if (streetNumber?.postalCode) {
-      return {
-        id: streetNumber.postalCode.id,
-        street: street.name,
-        number: streetNumber.value,
-        commune: commune.name,
-        region: commune.region.name,
-        postalCode: streetNumber.postalCode.code,
-      };
+      // 4. Si ya tiene postal code, retornarlo
+      if (streetNumber?.postalCode) {
+        return {
+          id: streetNumber.postalCode.id,
+          street: street.name,
+          number: streetNumber.value,
+          commune: commune.name,
+          region: commune.region.name,
+          postalCode: streetNumber.postalCode.code,
+        };
+      }
     }
 
-    // 5. Scraper si no hay postal code asociado
+    // 5. Scraping
     this.logger.debug(
       `Postal code not found locally. Executing scraper.`,
       'PostalCodesService',
@@ -104,7 +94,7 @@ export class PostalCodesService {
 
     const result = await scrapePostalCode(
       commune.name,
-      street.name,
+      streetInput,
       numberValue,
     );
 
@@ -117,14 +107,23 @@ export class PostalCodesService {
       return { error: result.error };
     }
 
-    // 6. Guardar código postal
+    // 6. Guardar postal code y entidades asociadas solo si el scraper fue exitoso
+    if (!street) {
+      street = await this.streetRepository.save(
+        this.streetRepository.create({
+          name: streetInput,
+          normalizedName: normalizedStreet,
+          commune,
+        }),
+      );
+    }
+
     const postalCode = await this.postalCodeRepository.save(
       this.postalCodeRepository.create({
         code: result.postalCode,
       }),
     );
 
-    // 7. Crear o actualizar StreetNumber
     if (!streetNumber) {
       streetNumber = this.streetNumberRepository.create({
         value: numberValue,

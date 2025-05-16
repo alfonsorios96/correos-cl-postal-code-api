@@ -4,6 +4,7 @@ import { Region } from '../../regions/entities/region.entity';
 import { Street } from '../../streets/entities/street.entity';
 import { StreetNumber } from '../../street-numbers/entities/street-number.entity';
 import { normalizeText } from '../../utils/normalize-text.util';
+import { PostalCode } from '../../postal-codes/entities/postal-code.entity';
 
 const AppDataSource = new DataSource({
   type: 'postgres',
@@ -12,7 +13,7 @@ const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME ?? 'postgres',
   password: process.env.DB_PASSWORD ?? 'postgres',
   database: process.env.DB_NAME ?? 'postal_codes',
-  entities: [Commune, Region, Street, StreetNumber],
+  entities: [Commune, Region, Street, StreetNumber, PostalCode],
   synchronize: false,
   logging: false,
 });
