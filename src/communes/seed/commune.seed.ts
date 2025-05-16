@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import { DataSource } from 'typeorm';
 import { Commune } from '../entities/commune.entity';
 import { Region } from '../../regions/entities/region.entity';
