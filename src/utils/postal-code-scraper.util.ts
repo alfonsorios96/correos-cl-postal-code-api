@@ -1,17 +1,9 @@
 import { chromium, Page } from 'playwright';
+import { normalizeText } from './normalize-text.util';
 
 function wait(seconds: number, msg = ''): Promise<void> {
   if (msg) console.log(`[WAIT] ${msg} (${seconds}s)`);
   return new Promise((res) => setTimeout(res, seconds * 1000));
-}
-
-function normalizeText(text: string): string {
-  return text
-    .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '')
-    .toUpperCase()
-    .trim()
-    .replace(/\s+/g, ' ');
 }
 
 async function autocompleteSelect(
