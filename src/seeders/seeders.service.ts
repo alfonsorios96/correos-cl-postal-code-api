@@ -5,6 +5,7 @@ import { Region } from '../regions/entities/region.entity';
 import { Commune } from '../communes/entities/commune.entity';
 import regionsData from './data/regions.data';
 import communesData from './data/communes.data';
+import { normalizeText } from '../utils/normalize-text.util';
 
 @Injectable()
 export class SeedersService {
@@ -53,7 +54,9 @@ export class SeedersService {
       if (!exists) {
         const newCommune = this.communeRepository.create({
           name: commune.name,
+          normalizedName: normalizeText(commune.name),
           region,
+          isActive: true,
         });
         await this.communeRepository.save(newCommune);
         console.log(`✅ Inserted: ${commune.name}`);
