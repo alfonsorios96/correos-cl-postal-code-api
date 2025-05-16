@@ -23,7 +23,7 @@ import { StreetNumbersModule } from './street-numbers/street-numbers.module';
         username: config.get<string>('DB_USERNAME'),
         password: config.get<string>('DB_PASSWORD'),
         database: config.get<string>('DB_NAME'),
-        synchronize: true, //config.get<string>('NODE_ENV') !== 'production',
+        synchronize: config.get<string>('NODE_ENV') !== 'production',
         autoLoadEntities: true,
         logging: config.get<string>('NODE_ENV') !== 'production',
       }),
