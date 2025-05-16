@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { chromium, Page } from 'playwright';
 
 function wait(seconds: number, msg = ''): Promise<void> {
@@ -140,12 +137,10 @@ export async function scrapePostalCode(
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('[ERROR]', message);
-    try {
-      await page.screenshot({ path: 'error.png' });
-      console.log('[DEBUG] Screenshot saved as error.png');
-    } catch (ssErr) {
-      console.warn('[WARNING] Could not capture screenshot:', ssErr);
-    }
+    console.error(
+      `[DEBUG] Scraper context → commune: '${commune}', street: '${street}', number: '${number}'`,
+    );
+
     return { error: `Scraper failed: ${message}` };
   } finally {
     console.log('[INFO] Closing browser...');
