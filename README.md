@@ -104,12 +104,12 @@ npm run start:prod       # Ejecuta desde dist/
 
 ## 🧠 Tecnologías utilizadas
 
-- **NestJS** – Framework robusto para APIs Node.js
-- **Playwright** – Automatización de scraping
-- **TypeORM** – ORM con PostgreSQL
-- **Swagger** – Documentación automática (`/docs`)
-- **Docker** – Contenerización lista para producción
-- **Railway** – Hosting actual del entorno productivo
+- **NestJS + Fastify** – API moderna en Node.js usando Fastify como adaptador, para mayor rendimiento que Express.
+- **Playwright** – Automatización robusta para hacer scraping del formulario de Correos de Chile.
+- **TypeORM** – ORM flexible para trabajar con PostgreSQL.
+- **PostgreSQL** – Base de datos relacional para almacenar búsquedas exitosas y evitar scraping innecesario.
+- **Swagger** – Documentación interactiva disponible en `/v1/api`.
+- **Railway** – Plataforma utilizada para desplegar y mantener la API en producción.
 
 ---
 
@@ -144,7 +144,11 @@ Si esta API te sirvió o te ahorró tiempo, puedes agradecer:
 
 ## 📫 Contacto
 
-💼 Proyecto mantenido por [Alejandro Exequiel Hernández Lara](https://kainext.cl)
-📧 contacto@kainext.cl
-🔗 https://postal-code-api.kainext.cl
-🏢 KaiNext Solutions Limitada | Santiago, Chile
+Este proyecto es mantenido por:
+
+**Alejandro Exequiel Hernández Lara**
+
+- Fundador y Arquitecto en [KaiNext](https://kainext.cl)
+- 📧 contacto@kainext.cl
+- 🌐 [postal-code-api.kainext.cl](https://postal-code-api.kainext.cl)
+- 🏢 KaiNext Solutions Limitada – Santiago, Chile
