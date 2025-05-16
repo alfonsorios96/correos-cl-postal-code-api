@@ -21,8 +21,8 @@ export class PostalCodesController {
     description:
       'Searches for a Chilean postal code by commune, street and number. If not found in the DB, the system scrapes Correos de Chile and stores it if valid.',
   })
-  @ApiQuery({ name: 'commune', required: true, example: 'La Florida' })
-  @ApiQuery({ name: 'street', required: true, example: 'Las Acacias' })
+  @ApiQuery({ name: 'commune', required: true, example: 'LA FLORIDA' })
+  @ApiQuery({ name: 'street', required: true, example: 'LAS ACACIAS' })
   @ApiQuery({ name: 'number', required: true, example: '7700' })
   @ApiOkResponse({
     description: 'Postal code found successfully.',

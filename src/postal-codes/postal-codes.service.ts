@@ -77,10 +77,10 @@ export class PostalCodesService {
       if (streetNumber?.postalCode) {
         return {
           id: streetNumber.postalCode.id,
-          street: street.name,
+          street: street.name.toUpperCase(),
           number: streetNumber.value,
-          commune: commune.name,
-          region: commune.region.name,
+          commune: commune.name.toUpperCase(),
+          region: commune.region.label.toUpperCase(),
           postalCode: streetNumber.postalCode.code,
         };
       }
@@ -143,10 +143,10 @@ export class PostalCodesService {
 
     return {
       id: postalCode.id,
-      street: street.name,
+      street: street.name.toUpperCase(),
       number: streetNumber.value,
-      commune: commune.name,
-      region: commune.region.name,
+      commune: commune.name.toUpperCase(),
+      region: commune.region.label.toUpperCase(),
       postalCode: postalCode.code,
     };
   }
