@@ -1,8 +1,13 @@
-import { chromium, Page } from 'playwright';
+import { Page } from 'playwright';
 import { normalizeText } from './normalize-text.util';
+import { getBrowser } from './browser-provider.util';
+import { AppLogger } from '../common/logger/logger.service';
+
+const logger = new AppLogger();
+const CONTEXT = 'PostalCodeScraper';
 
 function wait(seconds: number, msg = ''): Promise<void> {
-  if (msg) console.log(`[WAIT] ${msg} (${seconds}s)`);
+  if (msg) logger.verbose(`[WAIT] ${msg} (${seconds}s)`, CONTEXT);
   return new Promise((res) => setTimeout(res, seconds * 1000));
 }
 
@@ -31,9 +36,9 @@ async function ensureAutocompleteSelected(
   for (let i = 0; i < maxRetries; i++) {
     await autocompleteSelect(page, selector, expectedValue);
     const actual = (await page.inputValue(selector)).trim().toUpperCase();
-    console.log(`[DEBUG] Verifying ${label}: attempt ${i + 1} → '${actual}'`);
+    logger.debug(`Verifying ${label}: attempt ${i + 1} → '${actual}'`, CONTEXT);
     if (actual.includes(expectedValue.toUpperCase())) return;
-    console.warn(`[WARNING] ${label} value not correctly applied, retrying...`);
+    logger.warn(`${label} value not correctly applied, retrying...`, CONTEXT);
   }
   throw new Error(
     `Failed to select ${label} correctly after ${maxRetries} attempts.`,
@@ -60,20 +65,22 @@ export async function scrapePostalCode(
   street: string,
   number: string,
 ): Promise<{ postalCode?: string; error?: string }> {
-  console.log(
-    `[INFO] Scraping started for: '${commune}', '${street}', '${number}'`,
-  );
-
   const normalizedCommune = normalizeText(commune);
   const normalizedStreet = normalizeText(street);
   const normalizedNumber = normalizeText(number);
 
-  const browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage();
+  logger.log(
+    `Scraping started for: '${commune}', '${street}', '${number}'`,
+    CONTEXT,
+  );
+
+  const browser = await getBrowser();
+  const context = await browser.newContext();
+  const page = await context.newPage();
   page.setDefaultTimeout(20000);
 
   try {
-    console.log('[INFO] Opening Correos de Chile postal code page...');
+    logger.log('Opening Correos de Chile postal code page...', CONTEXT);
     await page.goto('https://www.correos.cl/codigo-postal', {
       timeout: 30000,
       waitUntil: 'domcontentloaded',
@@ -124,18 +131,22 @@ export async function scrapePostalCode(
     await resultLocator.waitFor({ state: 'visible', timeout: 15000 });
 
     const code = (await resultLocator.innerText()).trim();
-    console.log(`[INFO] Postal code retrieved: ${code}`);
+    logger.log(`Postal code retrieved: ${code}`, CONTEXT);
     return { postalCode: code };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    console.error('[ERROR]', message);
-    console.error(
-      `[DEBUG] Scraper context → commune: '${commune}', street: '${street}', number: '${number}'`,
+    logger.error(
+      `Scraper failed: ${message}`,
+      (error as Error)?.stack,
+      CONTEXT,
     );
-
+    logger.debug(
+      `Scraper context → commune: '${commune}', street: '${street}', number: '${number}'`,
+      CONTEXT,
+    );
     return { error: `Scraper failed: ${message}` };
   } finally {
-    console.log('[INFO] Closing browser...');
-    await browser.close();
+    await context.close();
+    logger.debug('Context closed after scraping', CONTEXT);
   }
 }
