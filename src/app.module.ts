@@ -8,6 +8,7 @@ import { StreetsModule } from './streets/streets.module';
 import { StreetNumbersModule } from './street-numbers/street-numbers.module';
 import { SeedersModule } from './seeders/seeders.module';
 import { StatsModule } from './stats/stats.module';
+import { HealthCheckModule } from './health-check/health-check.module';
 
 @Module({
   imports: [
@@ -30,13 +31,14 @@ import { StatsModule } from './stats/stats.module';
         logging: config.get<string>('NODE_ENV') !== 'production',
       }),
     }),
+    HealthCheckModule,
     PostalCodesModule,
     RegionsModule,
     CommunesModule,
     StreetsModule,
     StreetNumbersModule,
-    SeedersModule,
     StatsModule,
+    SeedersModule,
   ],
 })
 export class AppModule {}

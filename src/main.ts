@@ -42,7 +42,6 @@ async function bootstrap(): Promise<void> {
       'Free and public API that retrieves postal codes from Correos de Chile using headless scraping.\n\nBuilt with ❤️ by KaiNext.',
     )
     .setVersion('1.0')
-    .addTag('Postal Codes')
     .setContact('KaiNext', 'https://kainext.cl', 'contacto@kainext.cl')
     .setLicense('MIT', 'https://opensource.org/licenses/MIT')
     .build();
