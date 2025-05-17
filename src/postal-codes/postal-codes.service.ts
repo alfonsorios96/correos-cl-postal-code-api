@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PostalCode } from './entities/postal-code.entity';
@@ -212,5 +216,91 @@ export class PostalCodesService {
       region: commune.region.label.toUpperCase(),
       postalCode: postalCode.code,
     };
+  }
+
+  async findAll(
+    page = 1,
+    limit = 20,
+  ): Promise<{
+    data: PostalCodeResponseDto[];
+    meta: Readonly<{ total: number; page: number; limit: number }>;
+  }> {
+    const safeLimit = Math.min(Math.max(limit, 1), 100);
+    const safePage = Math.max(page, 1);
+
+    const [postalCodes, total] = await this.postalCodeRepository.findAndCount({
+      order: { id: 'ASC' },
+      take: safeLimit,
+      skip: (safePage - 1) * safeLimit,
+      relations: [
+        'streetNumbers',
+        'streetNumbers.street',
+        'streetNumbers.street.commune',
+        'streetNumbers.street.commune.region',
+      ],
+    });
+
+    const data = postalCodes.flatMap<PostalCodeResponseDto>((pc) =>
+      pc.streetNumbers.map<PostalCodeResponseDto>((sn) => ({
+        id: pc.id,
+        street: sn.street.name.toUpperCase(),
+        number: sn.value,
+        commune: sn.street.commune.name.toUpperCase(),
+        region: sn.street.commune.region.label.toUpperCase(),
+        postalCode: pc.code,
+      })),
+    );
+
+    this.logger.log(
+      `findAll → page:${safePage} limit:${safeLimit} returned:${data.length}/${total}`,
+      'PostalCodesService',
+    );
+
+    return {
+      data,
+      meta: { total, page: safePage, limit: safeLimit } as const,
+    };
+  }
+
+  async findByCode(code: string): Promise<PostalCodeResponseDto[]> {
+    const trimmed = code.trim();
+
+    if (!trimmed) {
+      throw new BadRequestException('Postal code cannot be empty');
+    }
+
+    const postal = await this.postalCodeRepository.findOne({
+      where: { code: trimmed },
+      relations: [
+        'streetNumbers',
+        'streetNumbers.street',
+        'streetNumbers.street.commune',
+        'streetNumbers.street.commune.region',
+      ],
+    });
+
+    if (!postal) {
+      this.logger.warn(
+        `Postal code not found: ${trimmed}`,
+        'PostalCodesService',
+      );
+      throw new NotFoundException(`Postal code '${trimmed}' not found`);
+    }
+
+    const result = postal.streetNumbers.map<PostalCodeResponseDto>((sn) => ({
+      id: postal.id,
+      street: sn.street.name.toUpperCase(),
+      number: sn.value,
+      commune: sn.street.commune.name.toUpperCase(),
+      region: sn.street.commune.region.label.toUpperCase(),
+      postalCode: postal.code,
+    }));
+
+    this.logger.log(
+      `findByCode '${trimmed}' → ${result.length} address(es)`,
+      'PostalCodesService',
+    );
+
+    return result;
   }
 }

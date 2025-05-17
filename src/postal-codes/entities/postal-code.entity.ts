@@ -5,7 +5,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { StreetNumber } from '../../street-numbers/entities/street-number.entity';
 
 @Entity('postal_codes')
 export class PostalCode {
@@ -18,6 +20,12 @@ export class PostalCode {
   @Column({ default: true })
   isActive: boolean;
 
+  @OneToMany(() => StreetNumber, (streetNumber) => streetNumber.postalCode, {
+    cascade: false,
+    eager: false,
+  })
+  streetNumbers!: StreetNumber[];
+
   @CreateDateColumn()
   createdAt: Date;
 
@@ -25,5 +33,5 @@ export class PostalCode {
   updatedAt: Date;
 
   @DeleteDateColumn({ nullable: true })
-  deletedAt?: Date;
+  deletedAt?: Date | null;
 }
