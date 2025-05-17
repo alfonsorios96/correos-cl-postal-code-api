@@ -7,6 +7,7 @@ import { CommunesModule } from './communes/communes.module';
 import { StreetsModule } from './streets/streets.module';
 import { StreetNumbersModule } from './street-numbers/street-numbers.module';
 import { SeedersModule } from './seeders/seeders.module';
+import { StatsModule } from './stats/stats.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { SeedersModule } from './seeders/seeders.module';
     StreetsModule,
     StreetNumbersModule,
     SeedersModule,
+    StatsModule,
   ],
 })
 export class AppModule {}
