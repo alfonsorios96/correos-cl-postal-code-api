@@ -1,9 +1,14 @@
-import { Controller, Get, Query, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  BadRequestException,
+  HttpCode,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { PostalCodesService } from './postal-codes.service';
@@ -16,23 +21,23 @@ export class PostalCodesController {
   constructor(private readonly postalCodesService: PostalCodesService) {}
 
   @Get('search')
+  @HttpCode(200)
   @ApiOperation({
     summary: 'Find a postal code by commune, street, and number',
     description:
       'Searches for a Chilean postal code by commune, street and number. If not found in the DB, the system scrapes Correos de Chile and stores it if valid.',
   })
-  @ApiQuery({ name: 'commune', required: true, example: 'LA FLORIDA' })
-  @ApiQuery({ name: 'street', required: true, example: 'LAS ACACIAS' })
-  @ApiQuery({ name: 'number', required: true, example: '7700' })
   @ApiOkResponse({
     description: 'Postal code found successfully.',
     type: PostalCodeResponseDto,
   })
   @ApiBadRequestResponse({
-    description: 'Invalid input or scraping failure.',
+    description: 'Invalid input, missing parameters, or scraping failure.',
     schema: {
       example: {
-        error: 'Scraper failed: Search button did not become enabled in time.',
+        statusCode: 400,
+        message: 'Commune "LAS CONDES" not found',
+        error: 'Bad Request',
       },
     },
   })
