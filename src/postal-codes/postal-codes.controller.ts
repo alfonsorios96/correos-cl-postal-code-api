@@ -19,6 +19,8 @@ import {
 import { PostalCodesService } from './postal-codes.service';
 import { PostalCodeSearchDto } from './dto/postal-code-search.dto';
 import { PostalCodeResponseDto } from './dto/postal-code-response.dto';
+import { SecureQueryDto } from '../common/dto/secure-query.dto';
+import { validatePasswordOrThrow } from '../utils/validate-password.util';
 
 type PaginatedPostalCodes = {
   data: PostalCodeResponseDto[];
@@ -62,6 +64,11 @@ export class PostalCodesController {
     description:
       'Returns every known postal code with its associated addresses. Supports pagination.',
   })
+  @ApiQuery({
+    name: 'password',
+    required: true,
+    example: 'supersecure-long-password-5481',
+  })
   @ApiQuery({ name: 'page', required: false, example: 1 })
   @ApiQuery({ name: 'limit', required: false, example: 20 })
   @ApiOkResponse({
@@ -83,9 +90,11 @@ export class PostalCodesController {
     },
   })
   async findAll(
+    @Query() secure: SecureQueryDto,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
   ): Promise<PaginatedPostalCodes> {
+    validatePasswordOrThrow(secure.password);
     return this.postalCodesService.findAll(page, limit);
   }
 
@@ -96,6 +105,11 @@ export class PostalCodesController {
       'Returns every street + number that maps to the given Chilean postal code.',
   })
   @ApiParam({ name: 'code', example: '7550174' })
+  @ApiQuery({
+    name: 'password',
+    required: true,
+    example: 'supersecure-long-password-5481',
+  })
   @ApiOkResponse({
     description: 'List of addresses that share the postal code.',
     type: [PostalCodeResponseDto],
@@ -112,7 +126,9 @@ export class PostalCodesController {
   })
   async findByCode(
     @Param('code') code: string,
+    @Query() secure: SecureQueryDto,
   ): Promise<PostalCodeResponseDto[]> {
+    validatePasswordOrThrow(secure.password);
     return this.postalCodesService.findByCode(code);
   }
 }
