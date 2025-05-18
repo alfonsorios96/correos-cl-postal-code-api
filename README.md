@@ -1,154 +1,144 @@
 # 🇨🇱 Chilean Postal Codes API
 
-**API gratuita, pública y sin llaves** para obtener códigos postales en Chile, utilizando scraping automatizado sobre la web oficial de Correos de Chile.
+**Open-source API as a Service** for Chilean postal-code look-ups, powered by headless scraping of the official Correos de Chile site.
 
-> 🛠️ Construido con ❤️ por [KaiNext](https://kainext.cl) – soluciones tecnológicas reales para problemas reales.
-
----
-
-## ✨ ¿Qué hace esta API?
-
-Correos de Chile tiene un formulario web para consultar códigos postales, pero no entrega APIs públicas para ello. Esta solución:
-
-- ✅ Simula el formulario oficial mediante **Playwright**
-- ✅ Realiza scraping seguro y eficiente solo si el dato no está en la base
-- ✅ Almacena los resultados en una base de datos para futuras consultas instantáneas
-- ✅ Expone endpoints REST públicos para **buscar códigos postales**, obtener **regiones** y **comunas**
-- ✅ No requiere autenticación, API keys ni tokens
+> 🛠️ Built with ❤️ by [KaiNext](https://kainext.cl) — cloud solutions that automate processes and scale real-world businesses.
 
 ---
 
-## 🌐 Producción
+## ✨ Why does this API exist?
 
-> 📡 Base URL pública:
+Correos de Chile only offers a web form for postal-code queries. This project:
 
-```
-https://postal-code-api.kainext.cl/v1/api
-```
-
-### 🔍 Buscar código postal
-
-```
-GET /v1/postal-codes/search
-```
-
-**Parámetros query:**
-
-| Parámetro | Tipo   | Requerido | Descripción            |
-| --------- | ------ | --------- | ---------------------- |
-| commune   | string | ✅        | Nombre de la comuna    |
-| street    | string | ✅        | Nombre de la calle     |
-| number    | string | ✅        | Número de la dirección |
-
-> 💡 Si el código no existe en la base, se hace scraping automáticamente y se guarda para la próxima vez.
+- ✅ Automates the official form with **Playwright**
+- ✅ Scrapes **only** when the code is missing from the database
+- ✅ Caches results in PostgreSQL for instant future queries
+- ✅ Exposes clean REST endpoints for **address → postal-code** search and location data
+- ✅ Ships an **open-source codebase** + **hosted API** with free and paid tiers
 
 ---
 
-### 📚 Obtener todas las regiones con sus comunas
+## 🌐 Production
 
-```
-GET /v1/regions/with-communes
-```
+> **Base URL:** `https://postal-code-api.kainext.cl/v1`
+
+### 🔓 Public endpoints (no authentication required)
+
+| Method & Path                 | Description                                            |
+| ----------------------------- | ------------------------------------------------------ |
+| `GET /v1/health`              | System health status                                   |
+| `GET /v1/stats/summary`       | Record counts for key entities                         |
+| `GET /v1/postal-codes/search` | Search postal code by _commune_, _street_ and _number_ |
+| `GET /v1/regions`             | List all Chilean regions                               |
+| `GET /v1/communes`            | List all Chilean communes                              |
+
+### 🔐 Protected endpoints (password required)
+
+| Method & Path                | Description                                           |
+| ---------------------------- | ----------------------------------------------------- |
+| `GET /v1/postal-codes`       | Paginated list of all postal codes                    |
+| `GET /v1/postal-codes/:code` | Reverse lookup: addresses for a postal code           |
+| `POST /v1/seeders/*`         | Seeders & database-normalization tools (internal use) |
+
+> **Password** must be sent as a `password` query parameter (for **GET**) or in the request body (for **POST** seeders).
+> The value is defined in `SEED_PASSWORD` or falls back to a hard-coded default in development.
+
+Interactive Swagger docs live at **`/v1/api`**.
 
 ---
 
-### 📍 Obtener todas las comunas
+## 🔍 Quick example — search a postal code
 
 ```
-GET /v1/communes/all
+GET /v1/postal-codes/search?commune=LAS+CONDES&street=AVENIDA+APOQUINDO&number=3000
 ```
+
+```jsonc
+{
+  "id": "uuid",
+  "street": "AVENIDA APOQUINDO",
+  "number": "3000",
+  "commune": "LAS CONDES",
+  "region": "REGIÓN METROPOLITANA",
+  "postalCode": "7550174",
+}
+```
+
+If the code is not cached, the API scrapes Correos de Chile in real time, stores the new record, and returns it in the same response.
 
 ---
 
-### 🌱 Seeders (Uso interno con contraseña)
-
-| Endpoint                    | Descripción                |
-| --------------------------- | -------------------------- |
-| `POST /v1/seeders/regions`  | Pobla la tabla de regiones |
-| `POST /v1/seeders/communes` | Pobla la tabla de comunas  |
-| `POST /v1/seeders/all`      | Pobla regiones y comunas   |
-
-> 🔐 Requiere una contraseña. Si logras adivinarla... hay premio 🎁
-
----
-
-## 🚀 Instalación local
+## 🚀 Local setup
 
 ```bash
-git clone https://github.com/kainext/correos-cl-postal-code-api.git
+git clone https://github.com/Alejandrehl/correos-cl-postal-code-api.git
 cd correos-cl-postal-code-api
 
-# Configura tus variables de entorno
+# Environment variables
 cp .env.example .env
+# → Configure DB, password, etc.
 
-# Instala dependencias
+# Install deps
 npm install
 
-# Ejecuta en modo desarrollo
+# Dev mode
 npm run start:dev
 ```
 
----
+### Useful scripts (local development only)
 
-## 🧪 Scripts útiles
+| Script                  | Purpose                        |
+| ----------------------- | ------------------------------ |
+| `npm run seed:regions`  | Insert Chilean regions locally |
+| `npm run seed:communes` | Insert all communes locally    |
+| `npm run build`         | Compile TypeScript             |
+| `npm run start:prod`    | Run from `dist/`               |
 
-```bash
-npm run seed:regions     # Inserta las regiones
-npm run seed:communes    # Inserta todas las comunas
-npm run start:dev        # Modo desarrollo
-npm run build            # Compilación
-npm run start:prod       # Ejecuta desde dist/
-```
-
----
-
-## 🧠 Tecnologías utilizadas
-
-- **NestJS + Fastify** – API moderna en Node.js usando Fastify como adaptador, para mayor rendimiento que Express.
-- **Playwright** – Automatización robusta para hacer scraping del formulario de Correos de Chile.
-- **TypeORM** – ORM flexible para trabajar con PostgreSQL.
-- **PostgreSQL** – Base de datos relacional para almacenar búsquedas exitosas y evitar scraping innecesario.
-- **Swagger** – Documentación interactiva disponible en `/v1/api`.
-- **Railway** – Plataforma utilizada para desplegar y mantener la API en producción.
+> In production **seeding and normalization are done via the HTTP endpoints**
+> (`POST /v1/seeders/*`) with the secure password.
 
 ---
 
-## 🤝 Contribuciones
+## 🧠 Tech stack
 
-¡Este proyecto está abierto a mejoras, ideas y pull requests!
-
-1. Haz un fork del repo
-2. Crea una branch (`git checkout -b feature/nueva-idea`)
-3. Realiza tus cambios
-4. Envía un PR (pull request)
-
-> 🙏 Por favor, mantén el código limpio, con buenas prácticas y comentarios donde sea necesario.
+- **NestJS** + **Fastify** — high-performance TypeScript API
+- **Playwright** — reliable browser automation for scraping
+- **TypeORM** + **PostgreSQL** — relational persistence layer
+- **Swagger / OpenAPI** — live documentation at `/v1/api`
+- **Railway** — one-click cloud deployment
 
 ---
 
-## ⚖️ Licencia
+## 🤝 Contributing
 
-MIT © [KaiNext](https://kainext.cl) – puedes usarlo, mejorarlo y compartirlo libremente.
+1. **Fork** the repo
+2. Create a feature branch: `git checkout -b feature/amazing`
+3. Commit & push your changes
+4. Open a **Pull Request**
 
----
-
-## ☕ Apóyame
-
-Si esta API te sirvió o te ahorró tiempo, puedes agradecer:
-
-- Compartiendo el proyecto 🙌
-- Dándole estrella al repo ⭐
-- Escribiéndome en [LinkedIn](https://www.linkedin.com/in/alejandrehl/)
+Please keep the code clean and well documented. 🙏
 
 ---
 
-## 📫 Contacto
+## ⚖️ License
 
-Este proyecto es mantenido por:
+**MIT** © [KaiNext](https://kainext.cl) — use it, improve it, and share it freely.
+
+---
+
+## ☕ Support
+
+If this project saved you time:
+
+- Give the repo a **⭐**
+- Share it on social networks
+- Say hi on [LinkedIn](https://www.linkedin.com/in/alejandrehl/)
+
+---
+
+## 📫 Maintainer
 
 **Alejandro Exequiel Hernández Lara**
-
-- Fundador y Arquitecto en [KaiNext](https://kainext.cl)
-- 📧 contacto@kainext.cl
-- 🌐 [postal-code-api.kainext.cl](https://postal-code-api.kainext.cl)
-- 🏢 KaiNext Solutions Limitada – Santiago, Chile
+Founder & Software Architect — KaiNext
+✉️ contacto@kainext.cl
+🌐 <https://postal-code-api.kainext.cl>
