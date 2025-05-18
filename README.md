@@ -138,8 +138,7 @@ If this project saved you time:
 
 ## 📫 Maintainer
 
-**Alejandro Exequiel Hernández Lara**
-
+- **Alejandro Exequiel Hernández Lara**
 - Founder & Software Architect — KaiNext
 - ✉️ contacto@kainext.cl
 - 🌐 <https://postal-code-api.kainext.cl>
