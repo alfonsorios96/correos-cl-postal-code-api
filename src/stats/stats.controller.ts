@@ -3,16 +3,16 @@ import { StatsService } from './stats.service';
 import { AppStatsDto } from './dto/stats.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('Statistics')
+@ApiTags('🧩 System')
 @Controller('stats')
 export class StatsController {
   constructor(private readonly statsService: StatsService) {}
 
   @Get('summary')
   @ApiOperation({
-    summary: 'Get database record counts',
-    description:
-      'Returns the total number of records for each entity in the application.',
+    summary: '📈 Get database record counts',
+    description: `**Public endpoint.** Returns the total number of records for key entities in the system (regions, communes, streets, postal codes, etc.).
+Useful for diagnostics, system monitoring or public transparency.`,
   })
   @ApiResponse({
     status: 200,

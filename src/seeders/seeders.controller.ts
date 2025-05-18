@@ -4,16 +4,16 @@ import { SeedRequestDto } from './dto/seed-request.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { validatePasswordOrThrow } from '../utils/validate-password.util';
 
-@ApiTags('Seeders')
+@ApiTags('🛠️ Internal Tools')
 @Controller('seeders')
 export class SeedersController {
   constructor(private readonly seedersService: SeedersService) {}
 
   @Post('regions')
   @ApiOperation({
-    summary: 'Seed regions',
-    description:
-      'Seeds all Chilean regions into the database. Requires a secure password.',
+    summary: '🛡️ Seed Chilean regions',
+    description: `**Protected endpoint.** Inserts all Chilean regions into the database.
+Requires a secure password and is intended for internal use only during initial setup or recovery.`,
   })
   @ApiResponse({ status: 201, description: 'Regions seeded successfully' })
   @ApiResponse({
@@ -27,9 +27,9 @@ export class SeedersController {
 
   @Post('communes')
   @ApiOperation({
-    summary: 'Seed communes',
-    description:
-      'Seeds all Chilean communes associated with their respective regions. Requires a secure password.',
+    summary: '🛡️ Seed Chilean communes',
+    description: `**Protected endpoint.** Inserts all Chilean communes, associating each with its corresponding region.
+Requires a secure password and is intended for internal setup or data restoration.`,
   })
   @ApiResponse({ status: 201, description: 'Communes seeded successfully' })
   @ApiResponse({
@@ -43,9 +43,12 @@ export class SeedersController {
 
   @Post('normalize')
   @ApiOperation({
-    summary: 'Normalize database',
-    description:
-      'Normalizes commune/street/postalCode data: trims, merges duplicates, and updates names. Requires a secure password.',
+    summary: '🛡️ Normalize database records',
+    description: `**Protected endpoint.** Cleans and standardizes data across communes, streets, and postal codes:
+- Trims names
+- Updates normalized fields
+- Merges duplicates
+Requires a secure password. Intended for internal maintenance and data consistency.`,
   })
   @ApiResponse({
     status: 200,
@@ -62,9 +65,12 @@ export class SeedersController {
 
   @Post('all')
   @ApiOperation({
-    summary: 'Seed all core data and normalize the database',
-    description:
-      'Executes the full seeding process for regions and communes, followed by a database normalization routine. Cleans up duplicates, trims postal codes, and standardizes street and commune names. Requires a secure password.',
+    summary: '🛡️ Full seed and normalization process',
+    description: `**Protected endpoint.** Runs the complete setup routine:
+- Seeds Chilean regions and communes
+- Normalizes data (trims, merges, standardizes names)
+
+Use only for initial deployment or full data refresh. Requires a secure password.`,
   })
   @ApiResponse({
     status: 201,

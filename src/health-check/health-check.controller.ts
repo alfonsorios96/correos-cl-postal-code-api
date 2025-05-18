@@ -8,7 +8,7 @@ import {
 import { HealthCheckService } from './health-check.service';
 import { HealthCheckResult } from '@nestjs/terminus';
 
-@ApiTags('Health Check')
+@ApiTags('🧩 System')
 @Controller('health')
 export class HealthCheckController {
   constructor(private readonly healthCheckService: HealthCheckService) {}

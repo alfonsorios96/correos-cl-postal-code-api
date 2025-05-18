@@ -27,7 +27,7 @@ type PaginatedPostalCodes = {
   meta: { total: number; page: number; limit: number };
 };
 
-@ApiTags('Postal Codes')
+@ApiTags('📮 Postal Codes')
 @Controller('postal-codes')
 export class PostalCodesController {
   constructor(private readonly postalCodesService: PostalCodesService) {}
