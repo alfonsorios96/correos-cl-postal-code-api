@@ -16,9 +16,13 @@ export class HealthCheckController {
   @Get()
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Check system health',
-    description:
-      'Returns the health status of the database, scraper and general system.',
+    summary: '📊 Health check of system components',
+    description: `Returns the real-time health status of critical services:
+- 📦 Database connection
+- 🕷️ Scraper availability
+- ⚙️ General system readiness
+
+Useful for monitoring and uptime verification.`,
   })
   @ApiOkResponse({
     description: 'System is healthy',
