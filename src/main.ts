@@ -37,9 +37,32 @@ async function bootstrap(): Promise<void> {
 
   // Swagger configuration
   const config = new DocumentBuilder()
-    .setTitle('Chilean Postal Codes API')
+    .setTitle('📮 Chilean Postal Codes API')
     .setDescription(
-      'Free and public API that retrieves postal codes from Correos de Chile using headless scraping.\n\nBuilt with ❤️ by KaiNext.',
+      `
+This API allows you to retrieve Chilean postal codes based on exact address input (commune, street, and number), using real-time scraping from Correos de Chile.
+
+---
+
+## 🔓 Public Endpoints (no authentication required)
+- \`GET /v1/health\` → System health status
+- \`GET /v1/stats/summary\` → Record counts for each entity
+- \`GET /v1/postal-codes/search\` → Search postal code by address
+- \`GET /v1/regions/with-communes\` → List of Chilean regions
+- \`GET /v1/communes/all\` → List of Chilean communes
+
+## 🔐 Protected Endpoints (password required)
+- Paginated list of all postal codes
+- Reverse lookup by postal code
+- Internal seeders and normalization tools
+- Data cleanup and maintenance
+
+> ⚠️ Protected endpoints are intended for internal or commercial use only.
+
+---
+
+🛠️ Built with ❤️ by [KaiNext](https://kainext.cl) — Cloud solutions that automate processes and scale real-world businesses.
+`,
     )
     .setVersion('1.0')
     .setContact('KaiNext', 'https://kainext.cl', 'contacto@kainext.cl')

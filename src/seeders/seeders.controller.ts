@@ -1,8 +1,8 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { SeedersService } from './seeders.service';
-import { SeedRequestDto } from './dto/seed-request.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { validatePasswordOrThrow } from '../utils/validate-password.util';
+import { SecureQueryDto } from '../common/dto/secure-query.dto';
 
 @ApiTags('🛠️ Internal Tools')
 @Controller('seeders')
@@ -20,7 +20,7 @@ Requires a secure password and is intended for internal use only during initial 
     status: 418,
     description: 'Unauthorized attempt with joke message',
   })
-  async seedRegions(@Body() body: SeedRequestDto) {
+  async seedRegions(@Body() body: SecureQueryDto) {
     validatePasswordOrThrow(body.password);
     return this.seedersService.seedRegions();
   }
@@ -36,7 +36,7 @@ Requires a secure password and is intended for internal setup or data restoratio
     status: 418,
     description: 'Unauthorized attempt with joke message',
   })
-  async seedCommunes(@Body() body: SeedRequestDto) {
+  async seedCommunes(@Body() body: SecureQueryDto) {
     validatePasswordOrThrow(body.password);
     return this.seedersService.seedCommunes();
   }
@@ -58,7 +58,7 @@ Requires a secure password. Intended for internal maintenance and data consisten
     status: 418,
     description: 'Unauthorized attempt with joke message',
   })
-  async normalize(@Body() body: SeedRequestDto) {
+  async normalize(@Body() body: SecureQueryDto) {
     validatePasswordOrThrow(body.password);
     return this.seedersService.normalizeDatabase(true);
   }
@@ -80,7 +80,7 @@ Use only for initial deployment or full data refresh. Requires a secure password
     status: 418,
     description: 'Unauthorized attempt with joke message',
   })
-  async seedAll(@Body() body: SeedRequestDto) {
+  async seedAll(@Body() body: SecureQueryDto) {
     validatePasswordOrThrow(body.password);
 
     const regionsResult = await this.seedersService.seedRegions();
